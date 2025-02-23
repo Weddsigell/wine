@@ -2,8 +2,6 @@ import datetime
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from itertools import groupby
 from operator import itemgetter
-from pprint import pprint
-
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import pandas
 
