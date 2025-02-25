@@ -8,10 +8,10 @@ import pandas
 
 def get_age():
     years = datetime.datetime.now().year - 1920
-    return f'{years} {year_format(years)}'
+    return f'{years} {get_year_format(years)}'
 
 
-def year_format(years):
+def get_year_format(years):
     if years % 100 in (range(11, 21)):
         return "лет"
     elif years % 10 in (0, 5, 6, 7, 8, 9):
