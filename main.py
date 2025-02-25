@@ -12,7 +12,7 @@ def create_parser():
     parser = argparse.ArgumentParser(description='генерирует index.html')
     parser.add_argument(
         'path_product',
-        help=f'Путь к файлу с асортиментом',
+        help=f'Путь к файлу с ассортиментом',
         type=Path
     )
     return parser.parse_args()
