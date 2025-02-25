@@ -2,8 +2,20 @@ import datetime
 from http.server import HTTPServer, SimpleHTTPRequestHandler
 from itertools import groupby
 from operator import itemgetter
+from pathlib import Path
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import pandas
+import argparse
+
+
+def create_parser():
+    parser = argparse.ArgumentParser(description='генерирует index.html')
+    parser.add_argument(
+        'path_product',
+        help=f'Путь к файлу с асортиментом',
+        type=Path
+    )
+    return parser.parse_args()
 
 
 def get_year_format(years):
@@ -17,14 +29,14 @@ def get_year_format(years):
         return "года"
 
 
-def main():
+def main(args):
     years = datetime.datetime.now().year - 1920
     env = Environment(
         loader=FileSystemLoader('.'),
         autoescape=select_autoescape(['html', 'xml'])
     )
     template = env.get_template('template.html')
-    cards = pandas.read_excel('wine3.xlsx', na_values=' ', keep_default_na=False).to_dict(orient="records")
+    cards = pandas.read_excel(args.path_product, na_values=' ', keep_default_na=False).to_dict(orient="records")
     cards.sort(key=itemgetter('Категория'))
     goods = {}
 
@@ -44,5 +56,5 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
-
+    args = create_parser()
+    main(args)
