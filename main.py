@@ -6,11 +6,6 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 import pandas
 
 
-def get_age():
-    years = datetime.datetime.now().year - 1920
-    return f'{years} {get_year_format(years)}'
-
-
 def get_year_format(years):
     if years % 100 in (range(11, 21)):
         return "лет"
@@ -22,26 +17,32 @@ def get_year_format(years):
         return "года"
 
 
-env = Environment(
-    loader=FileSystemLoader('.'),
-    autoescape=select_autoescape(['html', 'xml'])
-)
-template = env.get_template('template.html')
+def main():
+    years = datetime.datetime.now().year - 1920
+    env = Environment(
+        loader=FileSystemLoader('.'),
+        autoescape=select_autoescape(['html', 'xml'])
+    )
+    template = env.get_template('template.html')
+    cards = pandas.read_excel('wine3.xlsx', na_values=' ', keep_default_na=False).to_dict(orient="records")
+    cards.sort(key=itemgetter('Категория'))
+    goods = {}
 
-cards = pandas.read_excel('wine3.xlsx', na_values=' ', keep_default_na=False).to_dict(orient="records")
-cards.sort(key=itemgetter('Категория'))
-goods = {}
+    for key, val in groupby(cards, key=itemgetter('Категория')):
+        goods[key] = list(val)
 
-for key, val in groupby(cards, key=itemgetter('Категория')):
-    goods[key] = list(val)
+    rendered_page = template.render(
+        years=f'{years}{get_year_format(years)}',
+        goods=goods
+    )
 
-rendered_page = template.render(
-    years=get_age(),
-    goods=goods
-)
+    with open('index.html', 'w', encoding="utf8") as file:
+        file.write(rendered_page)
 
-with open('index.html', 'w', encoding="utf8") as file:
-    file.write(rendered_page)
+    server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
+    server.serve_forever()
 
-server = HTTPServer(('0.0.0.0', 8000), SimpleHTTPRequestHandler)
-server.serve_forever()
+
+if __name__ == '__main__':
+    main()
+
