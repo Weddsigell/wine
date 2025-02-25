@@ -31,17 +31,19 @@ def get_year_format(years):
 
 def main(args):
     years = datetime.datetime.now().year - 1920
+
     env = Environment(
         loader=FileSystemLoader('.'),
         autoescape=select_autoescape(['html', 'xml'])
     )
     template = env.get_template('template.html')
+
     cards = pandas.read_excel(args.path_product, na_values=' ', keep_default_na=False).to_dict(orient="records")
     cards.sort(key=itemgetter('Категория'))
-    goods = {}
 
-    for key, val in groupby(cards, key=itemgetter('Категория')):
-        goods[key] = list(val)
+    goods = {}
+    for category, card in groupby(cards, key=itemgetter('Категория')):
+        goods[category] = list(card)
 
     rendered_page = template.render(
         years=f'{years}{get_year_format(years)}',
