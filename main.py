@@ -23,7 +23,7 @@ def create_parser():
 
 
 def get_year_format(years):
-    if years % 100 in (range(11, 21)):
+    if years % 100 in range(11, 21):
         return "лет"
     elif years % 10 in (0, 5, 6, 7, 8, 9):
         return "лет"
