@@ -11,7 +11,9 @@ from unicodedata import category
 
 
 def create_parser():
-    parser = argparse.ArgumentParser(description='генерирует index.html')
+    parser = argparse.ArgumentParser(
+        description='скрипт наполняет сайт карточками товаров из exel файла'
+    )
     parser.add_argument(
         'path_product',
         help=f'Путь к файлу с ассортиментом',
