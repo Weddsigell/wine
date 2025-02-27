@@ -58,5 +58,4 @@ def main(args):
 
 
 if __name__ == '__main__':
-    args = create_parser()
-    main(args)
+    main(create_parser())
