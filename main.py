@@ -7,6 +7,8 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 import pandas
 import argparse
 
+from unicodedata import category
+
 
 def create_parser():
     parser = argparse.ArgumentParser(description='генерирует index.html')
@@ -41,9 +43,7 @@ def main(args):
     cards = pandas.read_excel(args.path_product, na_values=' ', keep_default_na=False).to_dict(orient="records")
     cards.sort(key=itemgetter('Категория'))
 
-    goods = {}
-    for category, card in groupby(cards, key=itemgetter('Категория')):
-        goods[category] = list(card)
+    goods = {category: list(card) for category, card in groupby(cards, key=itemgetter('Категория'))}
 
     rendered_page = template.render(
         years=f'{years}{get_year_format(years)}',
